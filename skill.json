@@ -1,20 +1,54 @@
 {
   "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "pt-BR": {
+          "summary": "Acompanhe os lançamentos de foguetes do dia.",
+          "examplePhrases": [
+            "Alexa, abra agenda de lançamentos.",
+            "Alexa, pergunta pra agenda de lançamentos, se tem foguete pra hoje."
+          ],
+          "keywords": [
+            "foguete",
+            "lançamento",
+            "espaço",
+            "agenda",
+            "missão"
+          ],
+          "name": "Buscapé",
+          "description": "Nesta skill, você irá saber se existem missões ou lançamentos de foguetes, no dia.",
+          "smallIconUri": "file://assets/images/pt-BR_smallIconUri.png",
+          "largeIconUri": "file://assets/images/pt-BR_largeIconUri.png"
+        }
+      },
+      "automaticDistribution": {
+        "sourceLocaleForLanguages": [],
+        "isActive": false
+      },
+      "isAvailableWorldwide": false,
+      "testingInstructions": "Alexa, abra a agenda de lançamentos.\n\nAPI URL used to get the data: https://fdo.rocketlaunch.live/json/launches/next/5",
+      "category": "NEWS",
+      "distributionMode": "PUBLIC",
+      "distributionCountries": [
+        "BR"
+      ]
+    },
     "apis": {
       "custom": {
         "endpoint": {
           "uri": "arn:aws:lambda:us-east-1:560311341852:function:b3b7743b-2c48-4239-bd9b-e12c3e347768:Release_0"
         },
         "interfaces": [],
+        "locales": {},
         "regions": {
-          "NA": {
-            "endpoint": {
-              "uri": "arn:aws:lambda:us-east-1:560311341852:function:b3b7743b-2c48-4239-bd9b-e12c3e347768:Release_0"
-            }
-          },
           "EU": {
             "endpoint": {
               "uri": "arn:aws:lambda:eu-west-1:560311341852:function:b3b7743b-2c48-4239-bd9b-e12c3e347768:Release_0"
+            }
+          },
+          "NA": {
+            "endpoint": {
+              "uri": "arn:aws:lambda:us-east-1:560311341852:function:b3b7743b-2c48-4239-bd9b-e12c3e347768:Release_0"
             }
           },
           "FE": {
@@ -26,24 +60,15 @@
       }
     },
     "manifestVersion": "1.0",
-    "publishingInformation": {
-      "category": "KNOWLEDGE_AND_TRIVIA",
-      "distributionCountries": [],
-      "isAvailableWorldwide": true,
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
       "locales": {
-        "pt-BR": {
-          "description": "Sample Full Description",
-          "examplePhrases": [
-            "Alexa abra olá mundo",
-            "olá",
-            "ajuda"
-          ],
-          "keywords": [],
-          "name": "Alexa launchpad",
-          "summary": "Sample Short Description"
-        }
+        "pt-BR": {}
       },
-      "testingInstructions": "Sample Testing Instructions."
+      "containsAds": false,
+      "isExportCompliant": true,
+      "isChildDirected": false,
+      "usesPersonalInfo": false
     }
   }
 }

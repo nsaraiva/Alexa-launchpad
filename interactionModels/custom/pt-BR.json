@@ -1,7 +1,6 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "tem lançamento hoje",
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
@@ -16,8 +15,8 @@
           "samples": []
         },
         {
-          "name": "HelloWorldIntent",
           "slots": [],
+          "name": "HelloWorldIntent",
           "samples": [
             "olá",
             "como vai você",
@@ -33,8 +32,8 @@
           "samples": []
         }
       ],
-      "types": []
+      "types": [],
+      "invocationName": "tem lançamento de foguete hoje"
     }
-  },
-  "version": "2"
+  }
 }

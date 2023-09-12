@@ -10,21 +10,47 @@ const LaunchRequestHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     async handle(handlerInput) {
-        let speakOutput = 'Vou verificar.';
+        let speakOutput = '';
+        let winOpenDate;
+        let today;
+        let launchTime;
+        let hasLaunch = false;
+        
+        // Get today's date without time
+        // Time zone in Brasilia/Brazil - Federal District (GMT-3)
+        today = new Date().toLocaleString('pt-BR', { timeZone:'America/Sao_Paulo'});
+        today = today.split(" ")[0]
         
         await getRemoteData('https://fdo.rocketlaunch.live/json/launches/next/5')
         .then((response) => {  
-            const data = JSON.parse(response);  
-            speakOutput = `${speakOutput} ${data.result[0].launch_description}`;
+            const data = JSON.parse(response); 
+            for (let i = 0; i < data.result.length; i += 1) {
+                // Get window start date without time
+                // Time zone in Brasilia/Brazil - Federal District (GMT-3) 
+                winOpenDate = new Date(data.result[i].t0);
+                 launchTime = (winOpenDate.toLocaleString('pt-BR', { timeZone:'America/Sao_Paulo'})).split(" ")[1];
+                 launchTime = launchTime.substring(0, launchTime.length - 3);
+                winOpenDate = (winOpenDate.toLocaleString('pt-BR', { timeZone:'America/Sao_Paulo'})).split(" ")[0];
+                
+                // Get the today's mission
+                if(winOpenDate === today){
+                    speakOutput = `${speakOutput} O foguete ${data.result[i].provider.name} ${data.result[i].vehicle.name} irá lançar a missão ${data.result[i].name}, hoje, às ${launchTime}<break time="1s"/>`;
+                    hasLaunch = true;
+                }
+            }
+            
+            if(hasLaunch === false){
+                    speakOutput = 'Não existem lançamentos para hoje';
+            }
         })
         .catch((err) => {  
-            console.log(`ERROR: ${err.message}`);  
-        });  
-  
-
+            speakOutput = `Não foi possível acessar a agenda de lançamentos, tente mais tarde`;
+        }); 
+        
+        speakOutput = `Vou verificar.<break time="1s"/> ${speakOutput}.`;
+        
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            //.reprompt(speakOutput)
             .getResponse();
     }
 };
@@ -42,28 +68,13 @@ const getRemoteData = (url) => new Promise((resolve, reject) => {
   request.on('error', (err) => reject(err));  
 });  
 
-const HelloWorldIntentHandler = {
-    canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'HelloWorldIntent';
-    },
-    handle(handlerInput) {
-        const speakOutput = 'Hello World!';
-
-        return handlerInput.responseBuilder
-            .speak(speakOutput)
-            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
-            .getResponse();
-    }
-};
-
 const HelpIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        const speakOutput = 'You can say hello to me! How can I help?';
+        const speakOutput = 'Você pode dizer olá para mim! Como posso ajudar?';
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -97,7 +108,7 @@ const FallbackIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.FallbackIntent';
     },
     handle(handlerInput) {
-        const speakOutput = 'Sorry, I don\'t know about that. Please try again.';
+        const speakOutput = 'Desculpe, eu não sei sobre isso. Por favor, tente novamente.';
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -131,7 +142,7 @@ const IntentReflectorHandler = {
     },
     handle(handlerInput) {
         const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
-        const speakOutput = `You just triggered ${intentName}`;
+        const speakOutput = `Você acabou de acionar ${intentName}`;
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -149,7 +160,7 @@ const ErrorHandler = {
         return true;
     },
     handle(handlerInput, error) {
-        const speakOutput = 'Sorry, I had trouble doing what you asked. Please try again.';
+        const speakOutput = 'Desculpe, tive problemas para fazer o que você pediu. Por favor, tente novamente.';
         console.log(`~~~~ Error handled: ${JSON.stringify(error)}`);
 
         return handlerInput.responseBuilder
@@ -167,7 +178,6 @@ const ErrorHandler = {
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
-        HelloWorldIntentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         FallbackIntentHandler,
